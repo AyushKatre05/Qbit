@@ -1,7 +1,9 @@
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Colors from "./../constant/Colors";
+import { useRouter } from "expo-router";
 
 export default function Index() {
+  const router  = useRouter();
   return (
     <View
       style={{
@@ -40,12 +42,12 @@ export default function Index() {
           }}>
           The App that helps you to manage your time and tasks efficiently
         </Text>
-        <View style={styles.button}>
+        <TouchableOpacity onPress={()=>router.push('/auth/signup')} style={styles.button}>
           <Text style={styles.buttonText}>Get Started</Text>
-        </View>
-        <View style={[styles.button , {borderWidth:1, backgroundColor:Colors.BLUE, borderColor:Colors.WHITE}]}>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={()=>router.push('/auth/signin')} style={[styles.button , {borderWidth:1, backgroundColor:Colors.BLUE, borderColor:Colors.WHITE}]}>
           <Text style={[styles.buttonText, {color: Colors.WHITE} ]}>Already Have an Account</Text>
-        </View>
+        </TouchableOpacity>
       </View>
     </View>
   );
