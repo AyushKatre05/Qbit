@@ -8,22 +8,26 @@ import {
   TouchableOpacity,
   StyleSheet,
   ToastAndroid,
+  ActivityIndicator, // Import loader
 } from "react-native";
-import { auth, db } from "../../config/firebaseConfig"; // Ensure 'db' is imported
+import { auth, db } from "../../config/firebaseConfig";
 import { UserDetailContext } from "../../context/UserDetailContext";
-import { doc, getDoc } from "firebase/firestore"; // Import Firestore functions
+import { doc, getDoc } from "firebase/firestore";
 
 const Signin = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const {userDetail, setUserDetail} = useContext(UserDetailContext);
+  const [loading, setLoading] = useState(false); // Add loading state
+  const { userDetail, setUserDetail } = useContext(UserDetailContext);
 
   const onSignIn = async () => {
     if (!email.trim() || !password.trim()) {
       ToastAndroid.show("Please enter email and password!", ToastAndroid.SHORT);
       return;
     }
+
+    setLoading(true); // Start loading
 
     try {
       const resp = await signInWithEmailAndPassword(auth, email.trim().toLowerCase(), password);
@@ -32,19 +36,21 @@ const Signin = () => {
       await getUserDetail(user);
     } catch (error) {
       console.error("Signin Error:", error);
-      ToastAndroid.show("Signin Error");
+      ToastAndroid.show("Signin Error", ToastAndroid.LONG);
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
   const getUserDetail = async (user) => {
     try {
-      const result = await getDoc(doc(db, "users", user.email));
+      const result = await getDoc(doc(db, "users", user.email)); // Kept original email-based lookup
       if (result.exists()) {
         const data = result.data();
         console.log("User Detail:", data);
         setUserDetail(data);
         ToastAndroid.show("Welcome back, " + data.name, ToastAndroid.SHORT);
-        router.push("/"); // Navigate after successful login
+        router.replace("/(tabs)/home"); // Navigate after successful login
       } else {
         console.log("User not found");
       }
@@ -77,8 +83,12 @@ const Signin = () => {
         <Text style={styles.forgotPassword}>Forgot Password?</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={onSignIn}>
-        <Text style={styles.buttonText}>Sign In</Text>
+      <TouchableOpacity style={styles.button} onPress={onSignIn} disabled={loading}>
+        {loading ? (
+          <ActivityIndicator size="small" color="#fff" /> // Show loader while signing in
+        ) : (
+          <Text style={styles.buttonText}>Sign In</Text>
+        )}
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => router.push("/auth/signup")}>
@@ -123,6 +133,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 8,
     alignItems: "center",
+    justifyContent: "center",
   },
   buttonText: {
     color: "#fff",

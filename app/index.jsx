@@ -1,9 +1,28 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Colors from "./../constant/Colors";
 import { useRouter } from "expo-router";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth, db } from "./../config/firebaseConfig";
+import { useContext } from "react";
+import { UserDetailContext } from "../context/UserDetailContext";
+import { doc, getDoc } from "firebase/firestore";
 
 export default function Index() {
   const router  = useRouter();
+  const { userDetail, setUserDetail } = useContext(UserDetailContext);
+
+  onAuthStateChanged(auth, async (user) => {  
+    if (user) {
+      console.log(user);
+      const result = await getDoc(doc(db, "users", user?.email));
+      if (result.exists()) {
+        const data = result.data();
+        setUserDetail(data);
+        router.replace("/(tabs)/home");
+      }
+    }
+  }
+  );
   return (
     <View
       style={{
