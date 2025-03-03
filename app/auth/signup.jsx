@@ -1,14 +1,17 @@
 import { useRouter } from "expo-router";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import { auth, db } from "../../config/firebaseConfig";
 import { setDoc, doc } from "firebase/firestore";
+import { UserDetailContext } from "../../context/UserDetailContext";
+
 
 const Signup = () => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { userDetail, setUserDetail } = useContext(UserDetailContext);
   const router = useRouter();
 
   const createNewAccount = async () => {
@@ -31,17 +34,19 @@ const Signup = () => {
   };
 
   const saveUser = async (user) => {
+    const data = {
+      name: fullName.trim(),
+      email: user.email,
+      member: false,
+      uid: user.uid,
+    };
     try {
-      await setDoc(doc(db, "users", user.email), {
-        name: fullName.trim(),
-        email: user.email,
-        member: false,
-        uid: user.uid,
-      });
+      await setDoc(doc(db, "users", user.email), data);
       console.log("User saved to Firestore");
     } catch (error) {
       console.error("Firestore Error:", error);
     }
+    setUserDetail(data);
   };
 
   return (

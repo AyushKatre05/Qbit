@@ -1,11 +1,58 @@
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import React, { useState, useContext } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  ToastAndroid,
+} from "react-native";
+import { auth, db } from "../../config/firebaseConfig"; // Ensure 'db' is imported
+import { UserDetailContext } from "../../context/UserDetailContext";
+import { doc, getDoc } from "firebase/firestore"; // Import Firestore functions
 
 const Signin = () => {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-    const router = useRouter();
+  const {userDetail, setUserDetail} = useContext(UserDetailContext);
+
+  const onSignIn = async () => {
+    if (!email.trim() || !password.trim()) {
+      ToastAndroid.show("Please enter email and password!", ToastAndroid.SHORT);
+      return;
+    }
+
+    try {
+      const resp = await signInWithEmailAndPassword(auth, email.trim().toLowerCase(), password);
+      const user = resp.user;
+      console.log("User Logged In:", user);
+      await getUserDetail(user);
+    } catch (error) {
+      console.error("Signin Error:", error);
+      ToastAndroid.show("Signin Error");
+    }
+  };
+
+  const getUserDetail = async (user) => {
+    try {
+      const result = await getDoc(doc(db, "users", user.email));
+      if (result.exists()) {
+        const data = result.data();
+        console.log("User Detail:", data);
+        setUserDetail(data);
+        ToastAndroid.show("Welcome back, " + data.name, ToastAndroid.SHORT);
+        router.push("/"); // Navigate after successful login
+      } else {
+        console.log("User not found");
+      }
+    } catch (error) {
+      console.error("Error fetching user details:", error);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Sign In</Text>
@@ -30,7 +77,7 @@ const Signin = () => {
         <Text style={styles.forgotPassword}>Forgot Password?</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={() => console.log("Sign In")}>
+      <TouchableOpacity style={styles.button} onPress={onSignIn}>
         <Text style={styles.buttonText}>Sign In</Text>
       </TouchableOpacity>
 
