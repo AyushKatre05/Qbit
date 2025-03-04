@@ -37,4 +37,8 @@ const {
         },
       ],
     });
+    export const GenerateCourseAIModel = model.startChat({
+      generationConfig,
+      history: [],
+    });
   
