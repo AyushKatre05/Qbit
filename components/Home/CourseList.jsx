@@ -1,10 +1,12 @@
-import { View, Text, FlatList, Image, StyleSheet, Dimensions } from 'react-native'
+import { View, Text, FlatList, Image, StyleSheet, Dimensions, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { imageAssets } from './../../constant/Option'
+import { useRouter } from 'expo-router';
 
 const { width } = Dimensions.get('window'); // Get screen width
 
 const CourseList = ({ courseList }) => {
+  const router = useRouter();
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Your Courses</Text>
@@ -15,14 +17,21 @@ const CourseList = ({ courseList }) => {
         showsHorizontalScrollIndicator={false} // Hide scroll bar
         contentContainerStyle={styles.listContainer}
         renderItem={({ item, index }) => (
-          <View key={index} style={styles.courseCard}>
+          <TouchableOpacity onPress={()=>router.push(
+            {
+              pathname : '/courseView',
+              params : {
+                courseParams : JSON.stringify(item)
+              }
+            }
+          )} key={index} style={styles.courseCard}>
             <Image
               style={styles.courseImage}
               source={imageAssets[item.banner_image]}
             />
             <Text style={styles.courseTitle}>{item?.courseTitle}</Text>
             <Text style={{textAlign:"center"}}>{item?.chapters?.length} Chapters</Text>
-          </View>
+          </TouchableOpacity>
         )}
       />
     </View>
