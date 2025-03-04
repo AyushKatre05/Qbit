@@ -17,31 +17,47 @@ Add Titles Exx Python Basics : A gentle intro like that dont add ex numbers just
     COURSE: dedent `: As you are coaching teacher 
 - User want to learn about all topics 
 - Create 2 course with course name , description and 3 chapter
-`,
-
-    COURSE_CREATION: dedent`: As you are an experienced educator
-- User wants to create a comprehensive course
-- Provide a course name, a detailed description, and outline 3 chapters with their respective topics
-
-Output must be in JSON format with the structure:
-{
-  "courseName": "string",
-  "description": "string",
-  "chapters": [
+- Make Sure to add chapter with all learning material course should be related to description
+- Add CourseBanner image from {'/banner1.png,'/banner2.png','/banner3.png', '/banner4.png','/banner5.png',  '/banner6.png'},
+-Explain the chapter content ass detailed tutorial
+-Generate 5 Quiz , 10 Flashcard and 5 questions answer
+- Output must be in JSON format only
+- "courses":[
+  {
+    "courseTitle" : "<Intro to python>",
+    "description" : '',
+    "banner_image" : "/banner1.png",
+    "chapters":[
+      {
+    chapterName : '',
+    content : [
+      {
+        topic : '<Topic Name in 2 to 4 words >',
+        explain : '<Code example of required else null>',
+        code : '<code example of required else null>',
+        example : '<example of required else null>'
+      }
+    ] 
+    }],
+    quiz : [
     {
-      "chapterTitle": "string",
-      "topics": ["string", "string", "string"]
-    },
+      question : '',
+      options : [a,b,c,d],
+      correctAns : ''
+    }],
+    flashcards : [
+      {
+        front : '',
+        back : ''
+      }
+    ],
+    qa : [
     {
-      "chapterTitle": "string",
-      "topics": ["string", "string", "string"]
-    },
-    {
-      "chapterTitle": "string",
-      "topics": ["string", "string", "string"]
+    question : '',
+    answer : ''
     }
-  ]
-}
+    ]
+  }
+]`
 
-Do not add any plain text in the output`
 }
