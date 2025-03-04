@@ -11,6 +11,8 @@ const Header = () => {
         display: "flex",
         flexDirection: "row",
         justifyContent: "space-between",
+        margin : 10,
+        padding : 10
       }}
     >
       <View>

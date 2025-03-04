@@ -1,8 +1,8 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import Colors from "./../constant/Colors";
+import Colors from "../constant/Colors";
 import { useRouter } from "expo-router";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth, db } from "./../config/firebaseConfig";
+import { auth, db } from "../config/firebaseConfig";
 import { useContext } from "react";
 import { UserDetailContext } from "../context/UserDetailContext";
 import { doc, getDoc } from "firebase/firestore";
